@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input } from '@angular/core';
+import { Component, OnChanges, Input } from "@angular/core";
 
 export interface Segment {
   key: string;
@@ -9,12 +9,11 @@ export interface Segment {
 }
 
 @Component({
-  selector: 'ngx-json-viewer',
-  templateUrl: './ngx-json-viewer.component.html',
-  styleUrls: ['./ngx-json-viewer.component.scss']
+  selector: "ngx-json-viewer",
+  templateUrl: "./ngx-json-viewer.component.html",
+  styleUrls: ["./ngx-json-viewer.component.scss"],
 })
 export class NgxJsonViewerComponent implements OnChanges {
-
   @Input() json: any;
   @Input() expanded = true;
   @Input() depth = -1;
@@ -27,19 +26,23 @@ export class NgxJsonViewerComponent implements OnChanges {
     this.segments = [];
 
     // remove cycles
+
+    // 123
     this.json = this.decycle(this.json);
 
-    if (typeof this.json === 'object') {
-      Object.keys(this.json).forEach(key => {
+    if (typeof this.json === "object") {
+      Object.keys(this.json).forEach((key) => {
         this.segments.push(this.parseKeyValue(key, this.json[key]));
       });
     } else {
-      this.segments.push(this.parseKeyValue(`(${typeof this.json})`, this.json));
+      this.segments.push(
+        this.parseKeyValue(`(${typeof this.json})`, this.json)
+      );
     }
   }
 
   isExpandable(segment: Segment) {
-    return segment.type === 'object' || segment.type === 'array';
+    return segment.type === "object" || segment.type === "array";
   }
 
   toggle(segment: Segment) {
@@ -53,46 +56,50 @@ export class NgxJsonViewerComponent implements OnChanges {
       key: key,
       value: value,
       type: undefined,
-      description: '' + value,
-      expanded: this.isExpanded()
+      description: "" + value,
+      expanded: this.isExpanded(),
     };
 
     switch (typeof segment.value) {
-      case 'number': {
-        segment.type = 'number';
+      case "number": {
+        segment.type = "number";
         break;
       }
-      case 'boolean': {
-        segment.type = 'boolean';
+      case "boolean": {
+        segment.type = "boolean";
         break;
       }
-      case 'function': {
-        segment.type = 'function';
+      case "function": {
+        segment.type = "function";
         break;
       }
-      case 'string': {
-        segment.type = 'string';
+      case "string": {
+        segment.type = "string";
         segment.description = '"' + segment.value + '"';
         break;
       }
-      case 'undefined': {
-        segment.type = 'undefined';
-        segment.description = 'undefined';
+      case "undefined": {
+        segment.type = "undefined";
+        segment.description = "undefined";
         break;
       }
-      case 'object': {
+      case "object": {
         // yea, null is object
         if (segment.value === null) {
-          segment.type = 'null';
-          segment.description = 'null';
+          segment.type = "null";
+          segment.description = "null";
         } else if (Array.isArray(segment.value)) {
-          segment.type = 'array';
-          segment.description = 'Array[' + segment.value.length + '] ' + JSON.stringify(segment.value);
+          segment.type = "array";
+          segment.description =
+            "Array[" +
+            segment.value.length +
+            "] " +
+            JSON.stringify(segment.value);
         } else if (segment.value instanceof Date) {
-          segment.type = 'date';
+          segment.type = "date";
         } else {
-          segment.type = 'object';
-          segment.description = 'Object ' + JSON.stringify(segment.value);
+          segment.type = "object";
+          segment.description = "Object " + JSON.stringify(segment.value);
         }
         break;
       }
@@ -103,8 +110,7 @@ export class NgxJsonViewerComponent implements OnChanges {
 
   private isExpanded(): boolean {
     return (
-      this.expanded &&
-      !(this.depth > -1 && this._currentDepth >= this.depth)
+      this.expanded && !(this.depth > -1 && this._currentDepth >= this.depth)
     );
   }
 
@@ -116,37 +122,42 @@ export class NgxJsonViewerComponent implements OnChanges {
       let nu: any;
 
       if (
-        typeof value === 'object'
-        && value !== null
-        && !(value instanceof Boolean)
-        && !(value instanceof Date)
-        && !(value instanceof Number)
-        && !(value instanceof RegExp)
-        && !(value instanceof String)
+        typeof value === "object" &&
+        value !== null &&
+        !(value instanceof Boolean) &&
+        !(value instanceof Date) &&
+        !(value instanceof Number) &&
+        !(value instanceof RegExp) &&
+        !(value instanceof String)
       ) {
         old_path = objects.get(value);
         if (old_path !== undefined) {
-          return {$ref: old_path};
+          return { $ref: old_path };
         }
         objects.set(value, path);
 
         if (Array.isArray(value)) {
           nu = [];
           value.forEach(function (element, i) {
-            nu[i] = derez(element, path + '[' + i + ']');
+            nu[i] = derez(element, path + "[" + i + "]");
+          });
+        } else if (value instanceof Map) {
+          nu = {};
+          value.forEach(function (element, key) {
+            nu[key] = derez(element, path + "[" + JSON.stringify(key) + "]");
           });
         } else {
           nu = {};
           Object.keys(value).forEach(function (name) {
             nu[name] = derez(
               value[name],
-              path + '[' + JSON.stringify(name) + ']'
+              path + "[" + JSON.stringify(name) + "]"
             );
           });
         }
         return nu;
       }
       return value;
-    }(object, '$'));
+    })(object, "$");
   }
 }
