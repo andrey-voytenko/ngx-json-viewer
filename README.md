@@ -8,13 +8,13 @@ Live demo:
 
 ## Install
 ```bash
-npm install ngx-json-viewer
+npm install ngx-json-viewer-ext
 ```
 
 or
 
 ```bash
-yarn add ngx-json-viewer
+yarn add ngx-json-viewer-ext
 ```
 
 For older Angular:
@@ -27,7 +27,7 @@ npm install ngx-json-viewer@2
 npm install ngx-json-viewer@1
 ```
 
-NPM Package: https://www.npmjs.com/package/ngx-json-viewer
+NPM Package: https://www.npmjs.com/package/ngx-json-viewer-ext
 
 ## Usage
 
