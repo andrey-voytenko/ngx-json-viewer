@@ -33,7 +33,7 @@ NPM Package: https://www.npmjs.com/package/ngx-json-viewer
 
 In your `app.module.ts` import `NgxJsonViewerModule` like
 ```js
-import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { NgxJsonViewerModule } from 'ngx-json-viewer-ext';
 
 @NgModule({
   ...,
